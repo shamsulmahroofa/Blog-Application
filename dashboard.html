@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | BlogSpace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <aside class="sidebar">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">B</span>
+                BlogSpace
+            </a>
+
+            <nav>
+                <a class="active" href="dashboard.html">Dashboard</a>
+                <a href="index.html">Home</a>
+                <a href="create-blog.html">Create Blog</a>
+                <a href="login.html">Logout</a>
+            </nav>
+        </aside>
+
+        <main class="dashboard-content">
+
+            <header class="dashboard-header">
+                <h1>Welcome back, Blogger</h1>
+                <p>Manage your stories, track what you have published, and keep drafts moving.</p>
+            </header>
+
+            <section class="stats-container">
+                <div class="stat-card">
+                    <div class="stat-icon total" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+                            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Total Blogs</h3>
+                        <p id="totalBlogs">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon published" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6 9 17l-5-5"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Published Blogs</h3>
+                        <p id="publishedBlogs">0</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon draft" aria-hidden="true">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3>Draft Blogs</h3>
+                        <p id="draftBlogs">0</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="my-blogs">
+                <div class="section-heading">
+                    <h2>My Blog Posts</h2>
+                    <a href="create-blog.html">New blog</a>
+                </div>
+
+                <div id="blogList">
+                    <!-- JavaScript displays saved blogs here -->
+                </div>
+            </section>
+
+        </main>
+
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>

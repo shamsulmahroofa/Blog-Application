@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlogSpace | Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="page-home">
+
+    <header class="site-header">
+        <nav class="site-nav">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">B</span>
+                BlogSpace
+            </a>
+
+            <ul>
+                <li><a class="active" href="index.html">Home</a></li>
+                <li><a href="login.html">Login</a></li>
+                <li><a class="nav-cta" href="register.html">Register</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div>
+                <span class="hero-kicker">Editorial storytelling</span>
+                <h1>Stories that deserve a quieter, better stage.</h1>
+                <p>
+                    BlogSpace is a clean space to write, publish and discover thoughtful
+                    writing. Share your ideas with the clarity of a magazine and the
+                    simplicity of a modern blog.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" href="register.html">Start writing</a>
+                    <a class="btn btn-ghost" href="#latest">Browse latest stories</a>
+                </div>
+            </div>
+
+            <aside class="hero-panel" aria-hidden="true">
+                <span>Featured</span>
+                <div>
+                    <h3>Write with intention. Publish with confidence.</h3>
+                    <p>A focused editor, a calm reading experience, and a dashboard that keeps your work organized.</p>
+                </div>
+                <div class="hero-meta">
+                    <span>Editorial design</span>
+                    <span>Local drafts</span>
+                </div>
+            </aside>
+        </section>
+
+        <section class="blog-section" id="latest">
+            <div class="section-header">
+                <div>
+                    <h2>Latest Blogs</h2>
+                    <p>Published stories from your BlogSpace library.</p>
+                </div>
+            </div>
+
+            <div class="blog-container" id="homeBlogList">
+                <!-- Published blogs will appear here -->
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+            <div>
+                <strong>BlogSpace</strong>
+                <p>A calm place for writing worth reading.</p>
+            </div>
+            <p>&copy; 2026 BlogSpace. All rights reserved.</p>
+        </div>
+    </footer>
+    <script src="js/script.js"></script>
+
+</body>
+
+</html>

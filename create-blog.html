@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blog | BlogSpace</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="page-create">
+
+    <header class="create-topbar">
+        <div class="create-topbar-inner">
+            <a class="brand" href="index.html">
+                <span class="brand-mark">B</span>
+                BlogSpace
+            </a>
+            <a href="dashboard.html">← Back to Dashboard</a>
+        </div>
+    </header>
+
+    <div class="create-container">
+
+        <div class="create-header">
+            <h1 id="editorHeading">Create a New Blog</h1>
+            <p id="editorSubtitle">Share a considered piece with a clean editorial layout.</p>
+        </div>
+
+        <form id="blogForm" class="create-form">
+
+            <label for="blogTitle">Blog Title</label>
+            <input type="text" id="blogTitle"
+                placeholder="A title readers will remember" required>
+
+            <div class="form-row">
+                <div>
+                    <label for="category">Category</label>
+                    <select id="category" required>
+                        <option value="">Select a category</option>
+                        <option value="Technology">Technology</option>
+                        <option value="Education">Education</option>
+                        <option value="Lifestyle">Lifestyle</option>
+                        <option value="Travel">Travel</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="coverImage">Cover Image URL</label>
+                    <input type="url" id="coverImage"
+                        placeholder="https://example.com/image.jpg">
+                </div>
+            </div>
+            <span class="form-hint">Use a wide landscape image for the best card preview.</span>
+
+            <label for="blogContent">Blog Content</label>
+            <textarea id="blogContent" rows="12"
+                placeholder="Write the story here..." required></textarea>
+
+            <button type="submit">Publish Blog</button>
+
+        </form>
+
+    </div>
+
+    <script src="js/script.js"></script>
+
+</body>
+</html>
