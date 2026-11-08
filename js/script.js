@@ -407,7 +407,10 @@ if (blogList) {
 const homeBlogList = document.getElementById("homeBlogList");
 
 if (homeBlogList) {
+    const blogSearch = document.getElementById("blogSearch");
+    const categoryFilter = document.getElementById("categoryFilter");
 
+    let allPublishedBlogs = [];
     const placeholderImage =
         "https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=1200&q=80";
 
@@ -426,7 +429,21 @@ if (homeBlogList) {
 
             homeBlogList.innerHTML = "";
 
-            const published = data.blogs;
+            allPublishedBlogs = data.blogs;
+
+            const published = allPublishedBlogs;
+
+            // Populate category dropdown
+            const categories = [
+                ...new Set(published.map(blog => blog.category))
+            ];
+
+            categories.forEach(function (category) {
+                const option = document.createElement("option");
+                option.value = category;
+                option.textContent = category;
+                categoryFilter.appendChild(option);
+            });
 
             if (published.length === 0) {
 
@@ -510,6 +527,57 @@ if (homeBlogList) {
                 homeBlogList.appendChild(blogCard);
 
             });
+
+            // Search and category filtering
+            const applyBlogFilters = () => {
+
+                const searchTerm = blogSearch.value.trim().toLowerCase();
+                const selectedCategory = categoryFilter.value;
+
+                let visibleCount = 0;
+
+                const cards = homeBlogList.querySelectorAll(".blog-card");
+
+                cards.forEach(function (card, index) {
+
+                    const blog = published[index];
+
+                    const matchesSearch = blog.title
+                     .toLowerCase()
+                    .includes(searchTerm);
+
+                    const matchesCategory =
+                        selectedCategory === "all" ||
+                        blog.category === selectedCategory;
+
+                    const shouldShow = matchesSearch && matchesCategory;
+
+                    card.style.display = shouldShow ? "" : "none";
+
+                    if (shouldShow) {
+                        visibleCount++;
+                    }
+                });
+
+                let message = document.getElementById("noBlogResults");
+
+                if (visibleCount === 0) {
+
+                    if (!message) {
+                        message = document.createElement("p");
+                        message.id = "noBlogResults";
+                        message.textContent = "No matching blogs found.";
+                        homeBlogList.appendChild(message);
+                    }
+
+                } else if (message) {
+                    message.remove();
+                }
+            };
+
+            blogSearch.addEventListener("input", applyBlogFilters);
+
+            categoryFilter.addEventListener("change", applyBlogFilters);
 
         } catch (error) {
             console.error("Home page blogs error:", error);
