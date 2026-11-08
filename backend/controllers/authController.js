@@ -1,17 +1,40 @@
 
-const User = require("../models/User");
+const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // User Registration
 const registerUser = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password } = req.body || {};
 
-        if (!name || !email || !password) {
+        if (
+            typeof name !== "string" ||
+            typeof email !== "string" ||
+            typeof password !== "string"
+        ) {
             return res.status(400).json({
                 success: false,
-                message: "Please provide name, email and password"
+                message: "Name, email and password must be provided as strings"
+            });
+        }
+
+        const normalizedName = name.trim();
+        const normalizedEmail = email.trim().toLowerCase();
+
+        if (!normalizedName) {
+            return res.status(400).json({
+                success: false,
+                message: "Name cannot be empty"
+            });
+        }
+
+        if (!EMAIL_PATTERN.test(normalizedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid email address"
             });
         }
 
@@ -21,8 +44,6 @@ const registerUser = async (req, res) => {
                 message: "Password must be at least 8 characters"
             });
         }
-
-        const normalizedEmail = email.trim().toLowerCase();
 
         const existingUser = await User.findOne({
             email: normalizedEmail
@@ -38,7 +59,7 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         const newUser = await User.create({
-            name: name.trim(),
+            name: normalizedName,
             email: normalizedEmail,
             password: hashedPassword
         });
@@ -54,7 +75,14 @@ const registerUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Registration error:", error);
+        if (error && error.code === 11000) {
+            return res.status(409).json({
+                success: false,
+                message: "User already exists"
+            });
+        }
+
+        console.error("Registration failed due to a server error.");
 
         res.status(500).json({
             success: false,
@@ -67,18 +95,34 @@ const registerUser = async (req, res) => {
 // User Login
 const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { email, password } = req.body || {};
 
-        if (!email || !password) {
+        if (typeof email !== "string" || typeof password !== "string") {
             return res.status(400).json({
                 success: false,
-                message: "Please provide email and password"
+                message: "Email and password must be provided as strings"
+            });
+        }
+
+        const normalizedEmail = email.trim().toLowerCase();
+
+        if (!EMAIL_PATTERN.test(normalizedEmail)) {
+            return res.status(400).json({
+                success: false,
+                message: "Please provide a valid email address"
+            });
+        }
+
+        if (!password) {
+            return res.status(400).json({
+                success: false,
+                message: "Password is required"
             });
         }
 
         // Find user by email
         const user = await User.findOne({
-            email: email.trim().toLowerCase()
+            email: normalizedEmail
         });
 
         if (!user) {
@@ -120,7 +164,7 @@ const loginUser = async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Login error:", error);
+        console.error("Login failed due to a server error.");
 
         res.status(500).json({
             success: false,

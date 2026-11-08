@@ -1,4 +1,19 @@
 // ==========================================
+// LOGOUT
+// ==========================================
+
+const logoutLink = document.querySelector(".sidebar nav a[href='login.html']");
+
+if (logoutLink) {
+    logoutLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+    });
+}
+
+// ==========================================
 // 0. USER REGISTRATION
 // ==========================================
 
@@ -241,6 +256,27 @@ if (blogList) {
     const totalBlogs = document.getElementById("totalBlogs");
     const publishedBlogs = document.getElementById("publishedBlogs");
     const draftBlogs = document.getElementById("draftBlogs");
+    const dashboardUserName = document.getElementById("dashboardUserName");
+    const dashboardUserEmail = document.getElementById("dashboardUserEmail");
+
+    let dashboardUser = null;
+
+    try {
+        const storedUser = localStorage.getItem("user");
+        dashboardUser = storedUser ? JSON.parse(storedUser) : null;
+    } catch (error) {
+        dashboardUser = null;
+    }
+
+    const displayName = typeof dashboardUser?.name === "string"
+        ? dashboardUser.name.trim()
+        : "";
+    const displayEmail = typeof dashboardUser?.email === "string"
+        ? dashboardUser.email.trim()
+        : "";
+
+    dashboardUserName.textContent = displayName || "there";
+    dashboardUserEmail.textContent = displayEmail || "Profile information unavailable";
 
     const token = localStorage.getItem("token");
 

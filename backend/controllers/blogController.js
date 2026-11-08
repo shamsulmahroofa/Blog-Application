@@ -1,26 +1,57 @@
 
-const Blog = require("../models/Blog");
+const Blog = require("../models/blog");
+
+const VALID_STATUSES = ["Published", "Draft"];
+const isValidBlogId = id => /^[0-9a-fA-F]{24}$/.test(id);
 
 // Create Blog
 const createBlog = async (req, res) => {
     try {
-        const { title, category, image, content, status } = req.body;
+        const { title, category, image, content, status } = req.body || {};
 
-        // Validate required fields
-        if (!title || !category || !content) {
+        if (
+            typeof title !== "string" ||
+            typeof category !== "string" ||
+            typeof content !== "string"
+        ) {
             return res.status(400).json({
                 success: false,
-                message: "Please provide title, category and content"
+                message: "Title, category and content must be provided as strings"
+            });
+        }
+
+        const normalizedTitle = title.trim();
+        const normalizedCategory = category.trim();
+        const normalizedContent = content.trim();
+
+        if (!normalizedTitle || !normalizedCategory || !normalizedContent) {
+            return res.status(400).json({
+                success: false,
+                message: "Title, category and content cannot be empty"
+            });
+        }
+
+        if (image !== undefined && typeof image !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Image must be a string"
+            });
+        }
+
+        if (status !== undefined && !VALID_STATUSES.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Status must be Published or Draft"
             });
         }
 
         // Create blog
         const newBlog = await Blog.create({
-            title,
-            category,
-            image: image || "",
-            content,
-            status: status || "Published",
+            title: normalizedTitle,
+            category: normalizedCategory,
+            image: image === undefined ? "" : image,
+            content: normalizedContent,
+            status: status === undefined ? "Published" : status,
             author: req.user.userId
         });
 
@@ -30,8 +61,8 @@ const createBlog = async (req, res) => {
             blog: newBlog
         });
 
-    } catch (error) {
-        console.error("Create blog error:", error);
+    } catch {
+        console.error("Create blog failed.");
 
         res.status(500).json({
             success: false,
@@ -56,8 +87,8 @@ const getMyBlogs = async (req, res) => {
             blogs: blogs
         });
 
-    } catch (error) {
-        console.error("Get blogs error:", error);
+    } catch {
+        console.error("Get blogs failed.");
 
         res.status(500).json({
             success: false,
@@ -72,7 +103,39 @@ const getMyBlogs = async (req, res) => {
 
 const updateBlog = async (req, res) => {
     try {
-        const { title, category, image, content, status } = req.body;
+        const { title, category, image, content, status } = req.body || {};
+
+        if (!isValidBlogId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
+        if (
+            (title !== undefined && (typeof title !== "string" || !title.trim())) ||
+            (category !== undefined && (typeof category !== "string" || !category.trim())) ||
+            (content !== undefined && (typeof content !== "string" || !content.trim()))
+        ) {
+            return res.status(400).json({
+                success: false,
+                message: "Title, category and content must be non-empty strings when provided"
+            });
+        }
+
+        if (image !== undefined && typeof image !== "string") {
+            return res.status(400).json({
+                success: false,
+                message: "Image must be a string"
+            });
+        }
+
+        if (status !== undefined && !VALID_STATUSES.includes(status)) {
+            return res.status(400).json({
+                success: false,
+                message: "Status must be Published or Draft"
+            });
+        }
 
         const blog = await Blog.findOne({
             _id: req.params.id,
@@ -86,11 +149,11 @@ const updateBlog = async (req, res) => {
             });
         }
 
-        blog.title = title || blog.title;
-        blog.category = category || blog.category;
-        blog.image = image !== undefined ? image : blog.image;
-        blog.content = content || blog.content;
-        blog.status = status || blog.status;
+        if (title !== undefined) blog.title = title.trim();
+        if (category !== undefined) blog.category = category.trim();
+        if (image !== undefined) blog.image = image;
+        if (content !== undefined) blog.content = content.trim();
+        if (status !== undefined) blog.status = status;
 
         const updatedBlog = await blog.save();
 
@@ -100,8 +163,8 @@ const updateBlog = async (req, res) => {
             blog: updatedBlog
         });
 
-    } catch (error) {
-        console.error("Update blog error:", error);
+    } catch {
+        console.error("Update blog failed.");
 
         res.status(500).json({
             success: false,
@@ -116,6 +179,13 @@ const updateBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
     try {
+        if (!isValidBlogId(req.params.id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
         const blog = await Blog.findOne({
             _id: req.params.id,
             author: req.user.userId
@@ -135,8 +205,8 @@ const deleteBlog = async (req, res) => {
             message: "Blog deleted successfully!"
         });
 
-    } catch (error) {
-        console.error("Delete blog error:", error);
+    } catch {
+        console.error("Delete blog failed.");
 
         res.status(500).json({
             success: false,
@@ -158,8 +228,8 @@ const getPublishedBlogs = async (req, res) => {
             blogs
         });
 
-    } catch (error) {
-        console.error("Get published blogs error:", error);
+    } catch {
+        console.error("Get published blogs failed.");
 
         res.status(500).json({
             success: false,
@@ -175,7 +245,7 @@ const getBlogById = async (req, res) => {
         const { id } = req.params;
 
         // Validate MongoDB ID
-        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+        if (!isValidBlogId(id)) {
             return res.status(400).json({
                 success: false,
                 message: "Invalid blog ID."
@@ -199,8 +269,8 @@ const getBlogById = async (req, res) => {
             blog
         });
 
-    } catch (error) {
-        console.error("Get blog details error:", error);
+    } catch {
+        console.error("Get blog details failed.");
 
         res.status(500).json({
             success: false,

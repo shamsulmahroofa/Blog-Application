@@ -32,8 +32,12 @@
         <main class="dashboard-content">
 
             <header class="dashboard-header">
-                <h1>Welcome back, Blogger</h1>
+                <h1>Welcome back, <span id="dashboardUserName">there</span></h1>
                 <p>Manage your stories, track what you have published, and keep drafts moving.</p>
+                <div class="dashboard-profile" aria-label="Profile information">
+                    <span class="dashboard-profile-label">Signed in as</span>
+                    <span class="dashboard-profile-email" id="dashboardUserEmail">Profile information unavailable</span>
+                </div>
             </header>
 
             <section class="stats-container">
