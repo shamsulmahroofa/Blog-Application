@@ -168,10 +168,52 @@ const getPublishedBlogs = async (req, res) => {
     }
 };
 
+
+// Get one published blog by ID
+const getBlogById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        // Validate MongoDB ID
+        if (!/^[0-9a-fA-F]{24}$/.test(id)) {
+            return res.status(400).json({
+                success: false,
+                message: "Invalid blog ID."
+            });
+        }
+
+        const blog = await Blog.findOne({
+            _id: id,
+            status: "Published"
+        }).populate("author", "name");
+
+        if (!blog) {
+            return res.status(404).json({
+                success: false,
+                message: "Blog not found."
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            blog
+        });
+
+    } catch (error) {
+        console.error("Get blog details error:", error);
+
+        res.status(500).json({
+            success: false,
+            message: "Server error while fetching blog details."
+        });
+    }
+};
+
 module.exports = {
     createBlog,
     getMyBlogs,
     updateBlog,
     deleteBlog,
-    getPublishedBlogs
+    getPublishedBlogs,
+    getBlogById
 };

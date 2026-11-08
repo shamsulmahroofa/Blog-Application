@@ -7,13 +7,15 @@ const {
     getMyBlogs,
     updateBlog,
     deleteBlog,
-    getPublishedBlogs
+    getPublishedBlogs,
+    getBlogById
 } = require("../controllers/blogController");
 
 const protect = require("../middleware/authMiddleware");
 
 // Public route - Home Page
 router.get("/published", getPublishedBlogs);
+router.get("/published/:id", getBlogById);
 
 // Protected routes
 router.post("/", protect, createBlog);

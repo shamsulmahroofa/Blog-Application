@@ -1024,3 +1024,122 @@ p {
         font-size: 1.5rem;
     }
 }
+
+/* ==========================================
+   Article Details
+========================================== */
+
+.page-article {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.page-article .blog-details-container {
+    width: min(920px, calc(100% - 48px));
+    margin: 44px auto 80px;
+}
+
+.page-article #blogDetails {
+    min-width: 0;
+}
+
+.page-article #blogDetails > p {
+    padding: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    text-align: center;
+}
+
+.page-article .back-link {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 22px;
+    color: var(--secondary);
+    font-weight: 600;
+}
+
+.page-article .back-link:hover {
+    color: var(--primary);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+}
+
+.page-article .blog-detail-card {
+    overflow: hidden;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.page-article .blog-detail-card > img {
+    width: 100%;
+    max-height: 500px;
+    aspect-ratio: 16 / 8.5;
+    object-fit: cover;
+    background: var(--primary-soft);
+}
+
+.page-article .blog-detail-content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 48px 56px 64px;
+}
+
+.page-article .blog-detail-content .blog-category {
+    margin-bottom: 8px;
+}
+
+.page-article .blog-detail-content h1 {
+    margin: 14px 0 18px;
+    color: var(--primary);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.18;
+    letter-spacing: 0;
+    overflow-wrap: anywhere;
+}
+
+.page-article .blog-detail-content .blog-meta {
+    margin-bottom: 30px;
+    padding-bottom: 22px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.92rem;
+}
+
+.page-article .blog-full-content {
+    color: var(--text);
+    font-size: 1.06rem;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+    .page-article .blog-details-container {
+        width: calc(100% - 28px);
+        margin: 26px auto 48px;
+    }
+
+    .page-article .blog-detail-card {
+        border-radius: var(--radius-md);
+    }
+
+    .page-article .blog-detail-card > img {
+        aspect-ratio: 4 / 3;
+    }
+
+    .page-article .blog-detail-content {
+        padding: 28px 22px 36px;
+    }
+
+    .page-article .blog-detail-content h1 {
+        font-size: 2rem;
+    }
+
+    .page-article .blog-full-content {
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+}

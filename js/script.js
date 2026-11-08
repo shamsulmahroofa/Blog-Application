@@ -451,6 +451,12 @@ if (homeBlogList) {
 
                 const blogCard = document.createElement("article");
                 blogCard.className = "blog-card";
+                blogCard.style.cursor = "pointer";
+
+                blogCard.addEventListener("click", function () {
+                     window.location.href = `blog-details.html?id=${encodeURIComponent(blog._id)}`;
+                    }
+                );
 
                 const media = document.createElement("div");
                 media.className = "blog-card-media";
@@ -514,4 +520,105 @@ if (homeBlogList) {
     };
 
     loadPublishedBlogs();
+}
+
+
+/* ==========================================
+   BLOG DETAILS PAGE
+========================================== */
+
+const blogDetails = document.getElementById("blogDetails");
+
+if (blogDetails) {
+
+    const params = new URLSearchParams(window.location.search);
+    const blogId = params.get("id");
+
+    const loadBlogDetails = async () => {
+
+        if (!blogId) {
+            blogDetails.innerHTML = "<p>Blog ID not found.</p>";
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `http://localhost:5000/api/blogs/published/${encodeURIComponent(blogId)}`
+            );
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.message || "Unable to load blog.");
+            }
+
+            const blog = data.blog;
+
+            const authorName = blog.author?.name || "Unknown Author";
+
+            const formattedDate = new Date(blog.createdAt)
+                .toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric"
+                });
+
+            const imageHTML = blog.image
+                ? `<img src="${escapeHTML(blog.image)}" alt="${escapeHTML(blog.title)}">`
+                : "";
+
+            blogDetails.innerHTML = `
+                <a href="index.html" class="back-link">
+                    &larr; Back to Home
+                </a>
+
+                <article class="blog-detail-card">
+
+                    ${imageHTML}
+
+                    <div class="blog-detail-content">
+
+                        <span class="blog-category">
+                            ${escapeHTML(blog.category)}
+                        </span>
+
+                        <h1>${escapeHTML(blog.title)}</h1>
+
+                        <p class="blog-meta">
+                            By ${escapeHTML(authorName)} 
+                            &bull; ${formattedDate}
+                        </p>
+
+                        <div class="blog-full-content">
+                            ${escapeHTML(blog.content).replace(/\n/g, "<br>")}
+                        </div>
+
+                    </div>
+                </article>
+            `;
+
+        } catch (error) {
+            console.error("Blog details error:", error);
+
+            blogDetails.innerHTML = `
+                <p>Unable to load this blog. Please try again later.</p>
+                <a href="index.html">Back to Home</a>
+            `;
+        }
+    };
+
+    loadBlogDetails();
+}
+
+// Safely display text from the database
+function escapeHTML(value) {
+    return String(value ?? "").replace(/[&<>"']/g, function (char) {
+        return {
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        }[char];
+    });
 }
