@@ -141,3 +141,4 @@ The backend package's `test` script is currently a placeholder; automated projec
 
 - **Author:** [shamsulmahroofa](https://github.com/shamsulmahroofa)
 - **GitHub repository:** [https://github.com/shamsulmahroofa/Blog-Application](https://github.com/shamsulmahroofa/Blog-Application)
+- Copyright © 2026 Shamsul Mahroofa
