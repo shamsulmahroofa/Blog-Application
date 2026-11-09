@@ -1,4 +1,6 @@
 const API_BASE_URL = "https://blogspace-api-v2gw.onrender.com";
+const isValidBlogId = id => typeof id === "string" && /^[0-9a-fA-F]{24}$/.test(id);
+
 // ==========================================
 // LOGOUT
 // ==========================================
@@ -126,43 +128,85 @@ if (blogForm) {
     const editorHeading = document.getElementById("editorHeading");
     const editorSubtitle = document.getElementById("editorSubtitle");
 
-    const editBlogId = localStorage.getItem("editBlogId");
+    const requestedEditId = new URLSearchParams(window.location.search).get("id");
+    const createHeading = editorHeading?.textContent || "Create a New Blog";
+    const createSubtitle = editorSubtitle?.textContent || "";
+    const createButtonText = submitButton?.textContent || "Publish Blog";
+    let currentEditId = null;
+    let blogToEdit = null;
 
-    // Load existing blog details when editing
-    if (editBlogId) {
+    if (isValidBlogId(requestedEditId)) {
+        try {
+            const cachedBlog = JSON.parse(
+                localStorage.getItem("editBlogData") || "null"
+            );
 
-        const blogToEdit = JSON.parse(
-            localStorage.getItem("editBlogData")
-        );
-
-        if (blogToEdit) {
-
-            titleInput.value = blogToEdit.title;
-            categoryInput.value = blogToEdit.category;
-            imageInput.value = blogToEdit.image || "";
-            contentInput.value = blogToEdit.content;
-
-            if (submitButton) {
-                submitButton.textContent = "Update Blog";
+            if (
+                cachedBlog &&
+                isValidBlogId(cachedBlog._id) &&
+                cachedBlog._id.toLowerCase() === requestedEditId.toLowerCase()
+            ) {
+                blogToEdit = cachedBlog;
+                currentEditId = requestedEditId;
             }
-
-            blogForm.classList.add("is-editing");
-
-            if (editorHeading) {
-                editorHeading.textContent = "Update your story";
-            }
-
-            if (editorSubtitle) {
-                editorSubtitle.textContent =
-                    "Revise the post, then save the latest version to your library.";
-            }
-
-        } else {
-
-            localStorage.removeItem("editBlogId");
-            localStorage.removeItem("editBlogData");
-
+        } catch (error) {
+            blogToEdit = null;
         }
+    }
+
+    const resetEditorToCreateMode = resetForm => {
+        currentEditId = null;
+        localStorage.removeItem("editBlogId");
+        localStorage.removeItem("editBlogData");
+
+        if (resetForm) {
+            blogForm.reset();
+        }
+
+        blogForm.classList.remove("is-editing");
+
+        if (submitButton) {
+            submitButton.textContent = createButtonText;
+        }
+
+        if (editorHeading) {
+            editorHeading.textContent = createHeading;
+        }
+
+        if (editorSubtitle) {
+            editorSubtitle.textContent = createSubtitle;
+        }
+
+        const pageUrl = new URL(window.location.href);
+        if (pageUrl.searchParams.has("id")) {
+            pageUrl.searchParams.delete("id");
+            window.history.replaceState({}, "", pageUrl);
+        }
+    };
+
+    // Load existing blog details only when the URL ID matches cached data.
+    if (currentEditId && blogToEdit) {
+        titleInput.value = blogToEdit.title;
+        categoryInput.value = blogToEdit.category;
+        imageInput.value = blogToEdit.image || "";
+        contentInput.value = blogToEdit.content;
+
+        if (submitButton) {
+            submitButton.textContent = "Update Blog";
+        }
+
+        blogForm.classList.add("is-editing");
+
+        if (editorHeading) {
+            editorHeading.textContent = "Update your story";
+        }
+
+        if (editorSubtitle) {
+            editorSubtitle.textContent =
+                "Revise the post, then save the latest version to your library.";
+        }
+    } else {
+        resetEditorToCreateMode(true);
     }
 
     // Handle form submission
@@ -180,7 +224,6 @@ if (blogForm) {
             return;
         }
 
-        const currentEditId = localStorage.getItem("editBlogId");
         const token = localStorage.getItem("token");
 
         if (!token) {
@@ -231,6 +274,12 @@ if (blogForm) {
                 window.location.href = "dashboard.html";
 
             } else {
+
+                if (currentEditId && response.status === 404) {
+                    resetEditorToCreateMode(false);
+                    alert("This blog no longer exists or is no longer available. The form has returned to Create mode.");
+                    return;
+                }
 
                 alert(data.message || "Failed to save blog.");
 
@@ -373,10 +422,17 @@ if (blogList) {
                     editButton.textContent = "Edit";
 
                     editButton.addEventListener("click", function () {
-                        localStorage.setItem("editBlogId", blog._id);
+                        const blogId = String(blog._id || "");
+
+                        if (!isValidBlogId(blogId)) {
+                            alert("This blog cannot be edited because its ID is invalid.");
+                            return;
+                        }
+
+                        localStorage.setItem("editBlogId", blogId);
                         localStorage.setItem("editBlogData", JSON.stringify(blog));
-                    
-                        window.location.href = "create-blog.html";
+
+                        window.location.href = `create-blog.html?id=${encodeURIComponent(blogId)}`;
                     });
 
                     // Delete button
