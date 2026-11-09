@@ -1,3 +1,5 @@
+const API_BASE_URL = "http://localhost:5000";
+
 // ==========================================
 // LOGOUT
 // ==========================================
@@ -34,7 +36,7 @@ if (registerForm) {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/register", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/register`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -76,7 +78,7 @@ if (loginForm) {
         const password = document.getElementById("password").value;
 
         try {
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
@@ -192,8 +194,8 @@ if (blogForm) {
 
             const response = await fetch(
                 currentEditId
-                    ? `http://localhost:5000/api/blogs/${currentEditId}`
-                    : "http://localhost:5000/api/blogs",
+                    ? `${API_BASE_URL}/api/blogs/${currentEditId}`
+                    : `${API_BASE_URL}/api/blogs`,
                 {
                     method: currentEditId ? "PUT" : "POST",
                     headers: {
@@ -287,7 +289,7 @@ if (blogList) {
 
         const loadDashboardBlogs = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/blogs", {
+                const response = await fetch(`${API_BASE_URL}/api/blogs`, {
                     method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`
@@ -392,7 +394,7 @@ if (blogList) {
 
                         try {
                             const deleteResponse = await fetch(
-                                `http://localhost:5000/api/blogs/${blog._id}`,
+                                `${API_BASE_URL}/api/blogs/${blog._id}`,
                                 {
                                     method: "DELETE",
                                     headers: {
@@ -454,7 +456,7 @@ if (homeBlogList) {
 
         try {
             const response = await fetch(
-                "http://localhost:5000/api/blogs/published"
+                `${API_BASE_URL}/api/blogs/published`
             );
 
             const data = await response.json();
@@ -647,7 +649,7 @@ if (blogDetails) {
 
         try {
             const response = await fetch(
-                `http://localhost:5000/api/blogs/published/${encodeURIComponent(blogId)}`
+                `${API_BASE_URL}/api/blogs/published/${encodeURIComponent(blogId)}`
             );
 
             const data = await response.json();
