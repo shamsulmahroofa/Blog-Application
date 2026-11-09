@@ -18,6 +18,11 @@ const allowedOrigins = [
     "http://127.0.0.1:5500",
     "http://localhost:5500"
 ];
+const frontendOrigin = process.env.FRONTEND_URL?.trim();
+
+if (frontendOrigin) {
+    allowedOrigins.push(frontendOrigin);
+}
 
 // Middleware
 app.use(cors({
